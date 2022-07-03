@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@headlessui/vue": "^1.6.5",
+    "firebase": "^9.8.4",
     "pinia": "^2.0.14",
-    "vue": "^3.2.37"
+    "vue": "^3.2.37",
+    "vue-router": "^4.0.16"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",

@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
+import { useUserStore } from '@/stores/user';
+
+const store = useUserStore();
+
 const emit = defineEmits<{
-  (e: 'openModal', isShow: Boolean): void;
+  (e: 'openModal', obj: Object): void;
+  (e: 'editModal', obj: Object): void;
 }>();
 
-const people = ref([
-  {
-    name: 'Lindsay Walton',
-    title: 'Front-end Developer',
-    email: 'lindsay.walton@example.com',
-    role: 'Member',
-  },
-]);
+const users = computed(() => {
+  return store.users;
+});
 </script>
 
 <template>
@@ -26,7 +26,7 @@ const people = ref([
       </div>
       <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
         <button
-          @click="emit('openModal', true)"
+          @click="emit('openModal', { show: true, text: 'add' })"
           type="button"
           class="inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto"
         >
@@ -73,7 +73,7 @@ const people = ref([
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <tr v-for="person in people" :key="person.email">
+                <tr v-for="person in users" :key="person.email">
                   <td
                     class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                   >
@@ -91,9 +91,18 @@ const people = ref([
                   <td
                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                   >
-                    <a href="#" class="text-green-600 hover:text-green-900"
-                      >Edit<span class="sr-only">, {{ person.name }}</span></a
+                    <button
+                      @click="
+                        emit('editModal', {
+                          show: true,
+                          text: 'edit',
+                          user: person,
+                        })
+                      "
+                      class="text-green-600 hover:text-green-900"
                     >
+                      Edit<span class="sr-only">, {{ person.name }}</span>
+                    </button>
                   </td>
                 </tr>
               </tbody>

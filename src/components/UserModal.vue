@@ -8,20 +8,31 @@ import {
 } from '@headlessui/vue';
 import AddUser from './Form/AddUser.vue';
 import { ref } from 'vue';
+import { useUserStore } from '@/stores/user';
+const store = useUserStore();
 
 interface Props {
   isShow: Boolean;
+  text: String;
+  person: Object;
 }
 
+const user = ref();
+
 const emit = defineEmits<{
-  (e: 'closeModal', close: Boolean): void;
+  (e: 'closeModal', show: Boolean): void;
 }>();
 const props = defineProps<Props>();
 
-const open = ref(false);
+const addUser = () => {
+  store.$patch((state) => {
+    state.users.push(user.value);
+  });
+  emit('closeModal', false);
+};
 </script>
 <template>
-  <TransitionRoot as="template" :show="isShow">
+  <TransitionRoot as="template" :show="props.isShow">
     <Dialog as="div" class="relative z-10" @close="emit('closeModal', false)">
       <TransitionChild
         as="template"
@@ -57,12 +68,12 @@ const open = ref(false);
                 <div class="mt-3 text-center sm:mt-5">
                   <DialogTitle
                     as="h3"
-                    class="text-lg leading-6 font-medium text-gray-900"
+                    class="text-lg capitalize leading-6 font-medium text-gray-900"
                   >
-                    Add user
+                    {{ props.text }} user
                   </DialogTitle>
                   <div class="mt-2">
-                    <AddUser />
+                    <AddUser @change="user = $event" :person="props.person" />
                   </div>
                 </div>
               </div>
@@ -70,7 +81,7 @@ const open = ref(false);
                 <button
                   type="button"
                   class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
-                  @click="emit('closeModal', false)"
+                  @click="addUser"
                 >
                   Save user
                 </button>
